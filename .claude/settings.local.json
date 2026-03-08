@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip show:*)",
+      "Bash(winget install:*)",
+      "Bash(py -3.12 -m pip install:*)",
+      "Bash(\"/c/Users/renau/AppData/Local/Programs/Python/Python312/python.exe\" -m pip install PyMuPDF Pillow)",
+      "Bash(\"/c/Users/renau/AppData/Local/Programs/Python/Python312/python.exe\" \"C:\\\\Users\\\\renau\\\\Desktop\\\\DEV SITE\\\\sitenoel\\\\extract_images.py\")"
+    ]
+  }
+}
