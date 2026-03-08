@@ -138,7 +138,50 @@
             color: var(--white);
         }
 
+        .cart-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--gold);
+            color: var(--white);
+            border: none;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            font-family: 'Lato', sans-serif;
+        }
+
+        .cart-btn:hover {
+            background: var(--primary-blue);
+        }
+
+        .cart-count {
+            background: var(--white);
+            color: var(--primary-blue);
+            font-size: 0.75rem;
+            font-weight: 600;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-count:empty {
+            display: none;
+        }
+
         /* Mobile Menu */
+        .mobile-header-actions {
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
         .mobile-menu-btn {
             display: none;
             background: none;
@@ -817,6 +860,14 @@
                 width: 100%;
             }
 
+            .nav-links .cart-btn {
+                display: none;
+            }
+
+            .mobile-header-actions {
+                display: flex;
+            }
+
             .mobile-menu-btn {
                 display: block;
             }
@@ -860,12 +911,16 @@
         <div class="container">
             <div class="header-content">
                 <a href="#" class="logo">NOEL DE SOPHIE</a>
-                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">&#9776;</button>
+                <div class="mobile-header-actions">
+                    <button class="cart-btn mobile-cart-btn" onclick="scrollToCart()">&#128722; <span class="cart-count" id="cartCountMobile"></span></button>
+                    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">&#9776;</button>
+                </div>
                 <nav class="nav-links" id="navLinks">
                     <a href="#accueil">Accueil</a>
                     <a href="#collection">Collection</a>
                     <a href="#contact">Contact</a>
                     <a href="#commander">Commander</a>
+                    <button class="cart-btn" onclick="scrollToCart()">&#128722; Panier <span class="cart-count" id="cartCount"></span></button>
                     <div class="client-type-nav">
                         <button class="client-btn active" onclick="switchClientType('particulier', this)">Particulier</button>
                         <button class="client-btn" onclick="switchClientType('professionnel', this)">Professionnel</button>
@@ -1570,8 +1625,23 @@
             }
         }
 
+        function scrollToCart() {
+            const target = document.getElementById('commander');
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function updateCartCount() {
+            const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const text = total > 0 ? total : '';
+            document.getElementById('cartCount').textContent = text;
+            document.getElementById('cartCountMobile').textContent = text;
+        }
+
         function updateCartDisplay() {
             localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
 
             const cartItemsEl = document.getElementById('cartItems');
             const cartTotalSection = document.getElementById('cartTotalSection');
