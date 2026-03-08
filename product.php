@@ -575,7 +575,7 @@ function generateStars($rating) {
     <footer>
         <div class="container">
             <div class="footer-content">
-                <p>&copy; 2024 Noel de Sophie - Tous droits reserves | Fabrique avec passion</p>
+                <p>&copy; 2026 Noel de Sophie - Tous droits reserves | Fabrique avec passion</p>
             </div>
         </div>
     </footer>
@@ -589,7 +589,7 @@ function generateStars($rating) {
     <script>
         // Product data
         const product = {
-            name: '<?php echo addslashes($product['name']); ?>',
+            name: <?php echo json_encode($product['name']); ?>,
             price: <?php echo $product['price']; ?>,
             pricePro: <?php echo $product['price_pro']; ?>
         };

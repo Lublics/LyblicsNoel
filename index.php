@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boules de Noel - Decorations Artisanales</title>
+    <title>Noel de Sophie - Decorations Artisanales</title>
     <link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&family=Lato:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -811,6 +811,12 @@
                 display: none;
             }
 
+            .nav-links.mobile-open {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+
             .mobile-menu-btn {
                 display: block;
             }
@@ -1460,7 +1466,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 Noel de Sophie - Tous droits reserves | Fabrique avec passion</p>
+                <p>&copy; 2026 Noel de Sophie - Tous droits reserves | Fabrique avec passion</p>
             </div>
         </div>
     </footer>
@@ -1485,7 +1491,7 @@
     <script>
         // State
         let currentClientType = 'particulier';
-        let cart = [];
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
         // Client Type Switching
         function switchClientType(type, btn) {
@@ -1565,6 +1571,8 @@
         }
 
         function updateCartDisplay() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+
             const cartItemsEl = document.getElementById('cartItems');
             const cartTotalSection = document.getElementById('cartTotalSection');
 
@@ -1701,7 +1709,7 @@
         // Mobile Menu
         function toggleMobileMenu() {
             const navLinks = document.getElementById('navLinks');
-            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+            navLinks.classList.toggle('mobile-open');
         }
 
         // Smooth Scrolling
@@ -1734,6 +1742,7 @@
 
         // Initialize
         updatePricesDisplay();
+        updateCartDisplay();
     </script>
 </body>
 </html>
