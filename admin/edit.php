@@ -155,13 +155,19 @@ adminHeader();
 
         <div class="card">
             <h2>Image</h2>
-            <?php if (!empty($product['image'])): ?>
-                <div style="margin-bottom: 1rem;">
-                    <img src="../<?= htmlspecialchars($product['image']) ?>" alt="" style="max-width: 200px; border: 1px solid #d4d0ca;">
-                    <p class="help" style="margin-top: 0.5rem;">Image actuelle. Choisissez un nouveau fichier pour la remplacer.</p>
+            <div style="display: flex; gap: 1.5rem; align-items: start; flex-wrap: wrap;">
+                <?php if (!empty($product['image'])): ?>
+                    <div>
+                        <p class="help" style="margin: 0 0 0.5rem;">Image actuelle</p>
+                        <img src="../<?= htmlspecialchars($product['image']) ?>" alt="" style="max-width: 200px; border: 1px solid #d4d0ca;">
+                    </div>
+                <?php endif; ?>
+                <div id="previewContainer" style="display: none;">
+                    <p class="help" style="margin: 0 0 0.5rem; color: #c9a959; font-weight: 600;">Apercu nouvelle image</p>
+                    <img id="imagePreview" alt="" style="max-width: 200px; border: 2px solid #c9a959;">
                 </div>
-            <?php endif; ?>
-            <label for="image">Fichier image (JPG, PNG, WEBP — max 5 Mo)</label>
+            </div>
+            <label for="image" style="margin-top: 1rem;">Fichier image (JPG, PNG, WEBP — max 5 Mo)</label>
             <input id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp">
         </div>
 
@@ -218,6 +224,23 @@ adminHeader();
 </div>
 
 <script>
+    const imageInput = document.getElementById('image');
+    const preview = document.getElementById('imagePreview');
+    const previewContainer = document.getElementById('previewContainer');
+    imageInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) {
+            previewContainer.style.display = 'none';
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            preview.src = ev.target.result;
+            previewContainer.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    });
+
     const nameInput = document.getElementById('name');
     const slugInput = document.getElementById('slug');
     let slugTouched = <?= $isNew ? 'false' : 'true' ?>;
@@ -226,7 +249,7 @@ adminHeader();
         if (slugTouched) return;
         slugInput.value = nameInput.value
             .toLowerCase()
-            .normalize('NFD').replace(/[̀-ͯ]/g, '')
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/^-+|-+$/g, '');
     });

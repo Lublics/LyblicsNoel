@@ -84,6 +84,34 @@ function initSchema(PDO $pdo): void {
             created_at TEXT DEFAULT CURRENT_TIMESTAMP
         )
     ");
+
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nom TEXT NOT NULL,
+            prenom TEXT NOT NULL,
+            email TEXT NOT NULL,
+            telephone TEXT,
+            sujet TEXT NOT NULL,
+            message TEXT NOT NULL,
+            ip TEXT,
+            user_agent TEXT,
+            lu INTEGER NOT NULL DEFAULT 0,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    ");
+
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS login_attempts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ip TEXT NOT NULL,
+            username TEXT,
+            success INTEGER NOT NULL DEFAULT 0,
+            attempted_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    ");
+
+    $pdo->exec("CREATE INDEX IF NOT EXISTS idx_attempts_ip ON login_attempts(ip, attempted_at)");
 }
 
 function seedIfEmpty(PDO $pdo): void {
@@ -231,4 +259,91 @@ function createAdmin(string $username, string $password): void {
         ':u' => $username,
         ':h' => password_hash($password, PASSWORD_DEFAULT),
     ]);
+}
+
+function saveMessage(array $data): int {
+    $stmt = db()->prepare("
+        INSERT INTO messages (nom, prenom, email, telephone, sujet, message, ip, user_agent)
+        VALUES (:nom, :prenom, :email, :telephone, :sujet, :message, :ip, :ua)
+    ");
+    $stmt->execute([
+        ':nom'       => $data['nom'],
+        ':prenom'    => $data['prenom'],
+        ':email'     => $data['email'],
+        ':telephone' => $data['telephone'] ?? null,
+        ':sujet'     => $data['sujet'],
+        ':message'   => $data['message'],
+        ':ip'        => $data['ip'] ?? null,
+        ':ua'        => $data['user_agent'] ?? null,
+    ]);
+    return (int) db()->lastInsertId();
+}
+
+function getMessages(bool $onlyUnread = false): array {
+    $sql = 'SELECT * FROM messages';
+    if ($onlyUnread) {
+        $sql .= ' WHERE lu = 0';
+    }
+    $sql .= ' ORDER BY created_at DESC';
+    return db()->query($sql)->fetchAll();
+}
+
+function getMessage(int $id): ?array {
+    $stmt = db()->prepare('SELECT * FROM messages WHERE id = :id LIMIT 1');
+    $stmt->execute([':id' => $id]);
+    $row = $stmt->fetch();
+    return $row ?: null;
+}
+
+function markMessageRead(int $id, bool $read = true): void {
+    $stmt = db()->prepare('UPDATE messages SET lu = :lu WHERE id = :id');
+    $stmt->execute([':id' => $id, ':lu' => $read ? 1 : 0]);
+}
+
+function deleteMessage(int $id): void {
+    $stmt = db()->prepare('DELETE FROM messages WHERE id = :id');
+    $stmt->execute([':id' => $id]);
+}
+
+function unreadMessagesCount(): int {
+    return (int) db()->query('SELECT COUNT(*) FROM messages WHERE lu = 0')->fetchColumn();
+}
+
+function recordLoginAttempt(string $ip, string $username, bool $success): void {
+    $stmt = db()->prepare('INSERT INTO login_attempts (ip, username, success) VALUES (:ip, :u, :s)');
+    $stmt->execute([':ip' => $ip, ':u' => $username, ':s' => $success ? 1 : 0]);
+}
+
+function recentFailedAttempts(string $ip, int $minutes = 15): int {
+    $stmt = db()->prepare("
+        SELECT COUNT(*) FROM login_attempts
+        WHERE ip = :ip AND success = 0
+          AND attempted_at >= datetime('now', :since)
+    ");
+    $stmt->execute([':ip' => $ip, ':since' => '-' . $minutes . ' minutes']);
+    return (int) $stmt->fetchColumn();
+}
+
+function clearLoginAttempts(string $ip): void {
+    $stmt = db()->prepare('DELETE FROM login_attempts WHERE ip = :ip AND success = 0');
+    $stmt->execute([':ip' => $ip]);
+}
+
+function reorderProducts(array $idsInOrder): void {
+    $pdo = db();
+    $pdo->beginTransaction();
+    try {
+        $stmt = $pdo->prepare('UPDATE products SET ordre = :ordre WHERE id = :id');
+        foreach ($idsInOrder as $position => $id) {
+            $stmt->execute([':ordre' => $position, ':id' => (int) $id]);
+        }
+        $pdo->commit();
+    } catch (Throwable $e) {
+        $pdo->rollBack();
+        throw $e;
+    }
+}
+
+function clientIp(): string {
+    return $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'unknown';
 }

@@ -80,6 +80,16 @@ function adminLayoutTop(string $title): void {
             }
             .admin-header a:hover { color: #c9a959; }
             .admin-header .brand { font-weight: 700; letter-spacing: 1px; }
+            .nav-badge {
+                display: inline-block;
+                background: #c0392b;
+                color: #fff;
+                font-size: 0.7rem;
+                padding: 2px 7px;
+                border-radius: 10px;
+                margin-left: 4px;
+                font-weight: 700;
+            }
             .admin-container {
                 max-width: 1100px;
                 margin: 2rem auto;
@@ -206,12 +216,14 @@ function adminLayoutBottom(): void {
 }
 
 function adminHeader(): void {
+    $unread = unreadMessagesCount();
     ?>
     <header class="admin-header">
         <div class="brand">NOEL DE SOPHIE — ADMIN</div>
         <nav>
             <a href="index.php">Produits</a>
             <a href="edit.php">Nouveau produit</a>
+            <a href="messages.php">Messages<?php if ($unread > 0): ?> <span class="nav-badge"><?= $unread ?></span><?php endif; ?></a>
             <a href="../index.php" target="_blank">Voir le site</a>
             <a href="logout.php">Deconnexion</a>
         </nav>

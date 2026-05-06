@@ -407,6 +407,16 @@ function stars(int $rating): string {
         }
 
         .submit-btn:hover { background: var(--gold); }
+        .submit-btn:disabled { background: #999; cursor: not-allowed; }
+
+        .form-error {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: #f8d7da;
+            border-left: 4px solid #c0392b;
+            color: #721c24;
+            font-size: 0.9rem;
+        }
 
         footer {
             background: var(--primary-blue);
@@ -611,15 +621,20 @@ function stars(int $rating): string {
 
                 <div class="form-container">
                     <h3>Envoyez-nous un message</h3>
-                    <form id="contactForm">
+                    <div id="formError" class="form-error" style="display: none;"></div>
+                    <form id="contactForm" action="contact.php" method="post">
+                        <div style="position: absolute; left: -9999px;" aria-hidden="true">
+                            <label for="website">Ne pas remplir</label>
+                            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+                        </div>
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="contact-nom">Nom *</label>
-                                <input type="text" id="contact-nom" name="nom" required>
+                                <input type="text" id="contact-nom" name="nom" required maxlength="100">
                             </div>
                             <div class="form-group">
                                 <label for="contact-prenom">Prenom *</label>
-                                <input type="text" id="contact-prenom" name="prenom" required>
+                                <input type="text" id="contact-prenom" name="prenom" required maxlength="100">
                             </div>
                         </div>
                         <div class="form-group">
@@ -628,7 +643,7 @@ function stars(int $rating): string {
                         </div>
                         <div class="form-group">
                             <label for="contact-telephone">Telephone</label>
-                            <input type="tel" id="contact-telephone" name="telephone">
+                            <input type="tel" id="contact-telephone" name="telephone" maxlength="30">
                         </div>
                         <div class="form-group">
                             <label for="contact-sujet">Sujet *</label>
@@ -641,9 +656,9 @@ function stars(int $rating): string {
                         </div>
                         <div class="form-group">
                             <label for="contact-message">Votre message *</label>
-                            <textarea id="contact-message" name="message" rows="5" required placeholder="Decrivez votre demande..."></textarea>
+                            <textarea id="contact-message" name="message" rows="5" required minlength="5" maxlength="5000" placeholder="Decrivez votre demande..."></textarea>
                         </div>
-                        <button type="submit" class="submit-btn">Envoyer le Message</button>
+                        <button type="submit" class="submit-btn" id="submitBtn">Envoyer le Message</button>
                     </form>
                 </div>
             </div>
@@ -700,10 +715,38 @@ function stars(int $rating): string {
             document.getElementById('successModal').classList.remove('show');
         }
 
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            document.getElementById('successModal').classList.add('show');
-            this.reset();
+            const form = this;
+            const btn = document.getElementById('submitBtn');
+            const errBox = document.getElementById('formError');
+            errBox.style.display = 'none';
+            btn.disabled = true;
+            btn.textContent = 'Envoi...';
+
+            try {
+                const res = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { 'Accept': 'application/json' }
+                });
+                const data = await res.json();
+
+                if (res.ok && data.ok) {
+                    document.getElementById('successModal').classList.add('show');
+                    form.reset();
+                } else {
+                    const msg = (data.errors && data.errors.join(' ')) || data.error || 'Erreur lors de l\'envoi.';
+                    errBox.textContent = msg;
+                    errBox.style.display = 'block';
+                }
+            } catch (err) {
+                errBox.textContent = 'Connexion impossible. Reessayez plus tard.';
+                errBox.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Envoyer le Message';
+            }
         });
 
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {

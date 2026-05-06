@@ -15,10 +15,16 @@ adminHeader();
         <a href="edit.php" class="btn">+ Nouveau produit</a>
     </div>
 
+    <p style="color: #666; font-size: 0.9rem; margin-bottom: 0.5rem;">
+        💡 Astuce : glissez-deposez les lignes pour reordonner les produits sur le site.
+    </p>
+    <div id="reorderStatus" style="display: none; padding: 0.5rem 1rem; margin-bottom: 0.5rem; font-size: 0.85rem;"></div>
+
     <div class="card" style="padding: 0; overflow: hidden;">
-        <table>
+        <table id="productsTable">
             <thead>
                 <tr>
+                    <th style="width: 30px;"></th>
                     <th>Image</th>
                     <th>Nom</th>
                     <th>Slug</th>
@@ -28,13 +34,14 @@ adminHeader();
                     <th style="width: 200px;">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="sortableProducts">
                 <?php if (empty($products)): ?>
-                    <tr><td colspan="7" style="text-align: center; padding: 2rem; color: #888;">Aucun produit</td></tr>
+                    <tr><td colspan="8" style="text-align: center; padding: 2rem; color: #888;">Aucun produit</td></tr>
                 <?php endif; ?>
 
                 <?php foreach ($products as $p): ?>
-                    <tr>
+                    <tr data-id="<?= (int) $p['id'] ?>">
+                        <td class="drag-handle" style="cursor: grab; color: #999; text-align: center; user-select: none;" title="Glisser pour reordonner">⋮⋮</td>
                         <td>
                             <?php if (!empty($p['image'])): ?>
                                 <img src="../<?= htmlspecialchars($p['image']) ?>" alt="">
@@ -71,4 +78,54 @@ adminHeader();
         </table>
     </div>
 </div>
+
+<style>
+    #sortableProducts tr.dragging { opacity: 0.5; }
+    #sortableProducts tr.drag-over { border-top: 2px solid #c9a959; }
+    .drag-handle:active { cursor: grabbing; }
+    #reorderStatus.success { background: #d4edda; color: #155724; }
+    #reorderStatus.error { background: #f8d7da; color: #721c24; }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<script>
+    const tbody = document.getElementById('sortableProducts');
+    const status = document.getElementById('reorderStatus');
+    const csrfTok = <?= json_encode(csrfToken()) ?>;
+
+    function showStatus(message, type) {
+        status.textContent = message;
+        status.className = type;
+        status.style.display = 'block';
+        if (type === 'success') {
+            setTimeout(() => { status.style.display = 'none'; }, 2000);
+        }
+    }
+
+    if (tbody && tbody.children.length > 0 && tbody.children[0].dataset.id) {
+        Sortable.create(tbody, {
+            handle: '.drag-handle',
+            animation: 150,
+            ghostClass: 'dragging',
+            onEnd: async () => {
+                const ids = [...tbody.querySelectorAll('tr[data-id]')].map(tr => tr.dataset.id);
+                const fd = new FormData();
+                fd.append('csrf', csrfTok);
+                ids.forEach(id => fd.append('ids[]', id));
+
+                try {
+                    const res = await fetch('reorder.php', { method: 'POST', body: fd });
+                    const data = await res.json();
+                    if (res.ok && data.ok) {
+                        showStatus('Ordre enregistre.', 'success');
+                    } else {
+                        showStatus('Erreur : ' + (data.error || 'inconnue'), 'error');
+                    }
+                } catch (err) {
+                    showStatus('Erreur reseau.', 'error');
+                }
+            }
+        });
+    }
+</script>
 <?php adminLayoutBottom();
