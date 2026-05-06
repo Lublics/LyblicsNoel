@@ -15,9 +15,6 @@ adminHeader();
         <a href="edit.php" class="btn">+ Nouveau produit</a>
     </div>
 
-    <p style="color: #666; font-size: 0.9rem; margin-bottom: 0.5rem;">
-        💡 Astuce : glissez-deposez les lignes pour reordonner les produits sur le site.
-    </p>
     <div id="reorderStatus" style="display: none; padding: 0.5rem 1rem; margin-bottom: 0.5rem; font-size: 0.85rem;"></div>
 
     <div class="card" style="padding: 0; overflow: hidden;">

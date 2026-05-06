@@ -2,6 +2,7 @@
 require_once __DIR__ . '/includes/db.php';
 
 $products = getProducts();
+$s = getSettings();
 
 function stars(int $rating): string {
     $out = '';
@@ -16,7 +17,8 @@ function stars(int $rating): string {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Noel de Sophie - Decorations Artisanales</title>
+    <title><?= htmlspecialchars($s['site_title'] ?? 'Noel de Sophie') ?></title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&family=Lato:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -529,13 +531,13 @@ function stars(int $rating): string {
 </head>
 <body>
     <div class="announcement-banner">
-        Decouvrez nos creations artisanales | <strong>Fabrication francaise</strong>
+        <?= $s['announcement'] ?? '' ?>
     </div>
 
     <header>
         <div class="container">
             <div class="header-content">
-                <a href="#" class="logo">NOEL DE SOPHIE</a>
+                <a href="#" class="logo"><?= htmlspecialchars($s['logo_text'] ?? '') ?></a>
                 <button class="mobile-menu-btn" onclick="toggleMobileMenu()">&#9776;</button>
                 <nav class="nav-links" id="navLinks">
                     <a href="#accueil">Accueil</a>
@@ -548,19 +550,19 @@ function stars(int $rating): string {
 
     <section class="hero" id="accueil">
         <div class="container hero-content">
-            <h1>Boules de Noel de Sophie</h1>
-            <p>Decorations soufflees a la main, fabriquees en France depuis 1920. Chaque piece est unique et temoigne d'un savoir-faire ancestral.</p>
-            <a href="#collection" class="cta-button">Decouvrir la Collection</a>
+            <h1><?= htmlspecialchars($s['hero_title'] ?? '') ?></h1>
+            <p><?= nl2br(htmlspecialchars($s['hero_subtitle'] ?? '')) ?></p>
+            <a href="#collection" class="cta-button"><?= htmlspecialchars($s['hero_cta'] ?? '') ?></a>
         </div>
     </section>
 
     <section class="section" id="collection">
         <div class="container">
-            <h2 class="section-title">Notre Collection</h2>
-            <p class="section-subtitle">Des decorations d'exception pour sublimer vos fetes</p>
+            <h2 class="section-title"><?= htmlspecialchars($s['collection_title'] ?? '') ?></h2>
+            <p class="section-subtitle"><?= htmlspecialchars($s['collection_subtitle'] ?? '') ?></p>
 
             <div class="collection-description">
-                <p>Decouvrez notre collection exclusive de boules en cristal avec gravure laser 3D. Chaque piece est un veritable chef-d'oeuvre artisanal, representant des divinites bouddhistes et des danseuses classiques. Fabriquees avec un cristal K9 de haute qualite, ces boules sont livrees avec un elegant socle en bois naturel equipe d'un eclairage LED qui illumine la gravure et cree une ambiance feerique. Parfaites comme decoration d'interieur, cadeau spirituel ou piece de collection.</p>
+                <p><?= nl2br(htmlspecialchars($s['collection_description'] ?? '')) ?></p>
             </div>
 
             <div class="products-grid">
@@ -591,30 +593,30 @@ function stars(int $rating): string {
 
     <section class="section contact-section" id="contact">
         <div class="container">
-            <h2 class="section-title">Contactez-nous</h2>
-            <p class="section-subtitle">Notre equipe est a votre disposition pour toute question</p>
+            <h2 class="section-title"><?= htmlspecialchars($s['contact_title'] ?? '') ?></h2>
+            <p class="section-subtitle"><?= htmlspecialchars($s['contact_subtitle'] ?? '') ?></p>
 
             <div class="contact-grid">
                 <div class="contact-info">
                     <h3>Nos Coordonnees</h3>
-                    <p>N'hesitez pas a nous contacter pour toute demande d'information sur nos produits ou nos creations personnalisees.</p>
+                    <p><?= nl2br(htmlspecialchars($s['contact_intro'] ?? '')) ?></p>
 
                     <div class="contact-details">
                         <div class="contact-item">
                             <div class="contact-item-icon">&#128222;</div>
-                            <div><strong>Telephone</strong><br>01 23 45 67 89</div>
+                            <div><strong>Telephone</strong><br><?= htmlspecialchars($s['contact_phone'] ?? '') ?></div>
                         </div>
                         <div class="contact-item">
                             <div class="contact-item-icon">&#9993;</div>
-                            <div><strong>Email</strong><br>contact@noeldesophie.fr</div>
+                            <div><strong>Email</strong><br><?= htmlspecialchars($s['contact_email'] ?? '') ?></div>
                         </div>
                         <div class="contact-item">
                             <div class="contact-item-icon">&#128205;</div>
-                            <div><strong>Adresse</strong><br>12 Rue des Artisans<br>75001 Paris, France</div>
+                            <div><strong>Adresse</strong><br><?= nl2br(htmlspecialchars($s['contact_address'] ?? '')) ?></div>
                         </div>
                         <div class="contact-item">
                             <div class="contact-item-icon">&#128344;</div>
-                            <div><strong>Horaires</strong><br>Lun-Ven: 9h-18h<br>Sam: 10h-16h</div>
+                            <div><strong>Horaires</strong><br><?= nl2br(htmlspecialchars($s['contact_hours'] ?? '')) ?></div>
                         </div>
                     </div>
                 </div>
@@ -669,9 +671,8 @@ function stars(int $rating): string {
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
-                    <h4>NOEL DE SOPHIE</h4>
-                    <p>Createur de decorations de Noel artisanales depuis 1920.</p>
-                    <p>Savoir-faire francais, pieces uniques soufflees a la main.</p>
+                    <h4><?= htmlspecialchars($s['logo_text'] ?? '') ?></h4>
+                    <p><?= nl2br(htmlspecialchars($s['footer_about'] ?? '')) ?></p>
                 </div>
                 <div class="footer-col">
                     <h4>NAVIGATION</h4>
@@ -686,13 +687,12 @@ function stars(int $rating): string {
                 </div>
                 <div class="footer-col">
                     <h4>CONTACT</h4>
-                    <p>&#128222; 01 23 45 67 89</p>
-                    <p>&#9993; contact@noeldesophie.fr</p>
-                    <p>&#128205; 12 Rue des Artisans, 75001 Paris</p>
+                    <p>&#128222; <?= htmlspecialchars($s['contact_phone'] ?? '') ?></p>
+                    <p>&#9993; <?= htmlspecialchars($s['contact_email'] ?? '') ?></p>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; <?= date('Y') ?> Noel de Sophie - Tous droits reserves | Fabrique avec passion</p>
+                <p>&copy; <?= date('Y') ?> <?= htmlspecialchars($s['footer_copyright'] ?? '') ?></p>
             </div>
         </div>
     </footer>

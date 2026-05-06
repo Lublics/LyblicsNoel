@@ -115,6 +115,8 @@ adminHeader();
 
     <h1 style="margin-top: 1rem;"><?= $isNew ? 'Nouveau produit' : 'Editer : ' . htmlspecialchars($product['name']) ?></h1>
 
+    <?php renderFlash(); ?>
+
     <?php if (!empty($errors)): ?>
         <div class="flash flash-error">
             <strong>Erreurs :</strong>

@@ -112,6 +112,44 @@ function initSchema(PDO $pdo): void {
     ");
 
     $pdo->exec("CREATE INDEX IF NOT EXISTS idx_attempts_ip ON login_attempts(ip, attempted_at)");
+
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS settings (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL DEFAULT '',
+            updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    ");
+
+    seedSettingsIfMissing($pdo);
+}
+
+function seedSettingsIfMissing(PDO $pdo): void {
+    $defaults = [
+        'site_title'             => 'Noel de Sophie - Decorations Artisanales',
+        'logo_text'              => 'NOEL DE SOPHIE',
+        'announcement'           => 'Decouvrez nos creations artisanales | <strong>Fabrication francaise</strong>',
+        'hero_title'             => 'Boules de Noel de Sophie',
+        'hero_subtitle'          => "Decorations soufflees a la main, fabriquees en France depuis 1920. Chaque piece est unique et temoigne d'un savoir-faire ancestral.",
+        'hero_cta'               => 'Decouvrir la Collection',
+        'collection_title'       => 'Notre Collection',
+        'collection_subtitle'    => "Des decorations d'exception pour sublimer vos fetes",
+        'collection_description' => "Decouvrez notre collection exclusive de boules en cristal avec gravure laser 3D. Chaque piece est un veritable chef-d'oeuvre artisanal, representant des divinites bouddhistes et des danseuses classiques. Fabriquees avec un cristal K9 de haute qualite, ces boules sont livrees avec un elegant socle en bois naturel equipe d'un eclairage LED qui illumine la gravure et cree une ambiance feerique. Parfaites comme decoration d'interieur, cadeau spirituel ou piece de collection.",
+        'contact_title'          => 'Contactez-nous',
+        'contact_subtitle'       => 'Notre equipe est a votre disposition pour toute question',
+        'contact_intro'          => "N'hesitez pas a nous contacter pour toute demande d'information sur nos produits ou nos creations personnalisees.",
+        'contact_phone'          => '06 73 50 62 76',
+        'contact_email'          => 'renaud.randy90@gmail.com',
+        'contact_address'        => "42 Avenue des Cristaux\n38000 Grenoble, France",
+        'contact_hours'          => "Lun-Ven: 9h-18h\nSam: 10h-16h",
+        'footer_about'           => "Createur de decorations de Noel artisanales depuis 1920.\nSavoir-faire francais, pieces uniques soufflees a la main.",
+        'footer_copyright'       => 'Noel de Sophie - Tous droits reserves | Fabrique avec passion',
+    ];
+
+    $stmt = $pdo->prepare('INSERT OR IGNORE INTO settings (key, value) VALUES (:k, :v)');
+    foreach ($defaults as $k => $v) {
+        $stmt->execute([':k' => $k, ':v' => $v]);
+    }
 }
 
 function seedIfEmpty(PDO $pdo): void {
@@ -346,4 +384,30 @@ function reorderProducts(array $idsInOrder): void {
 
 function clientIp(): string {
     return $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+}
+
+function getSettings(): array {
+    $rows = db()->query('SELECT key, value FROM settings')->fetchAll();
+    $out = [];
+    foreach ($rows as $r) {
+        $out[$r['key']] = $r['value'];
+    }
+    return $out;
+}
+
+function getSetting(string $key, string $default = ''): string {
+    $stmt = db()->prepare('SELECT value FROM settings WHERE key = :k LIMIT 1');
+    $stmt->execute([':k' => $key]);
+    $val = $stmt->fetchColumn();
+    return $val !== false ? (string) $val : $default;
+}
+
+function saveSettings(array $kv): void {
+    $stmt = db()->prepare("
+        INSERT INTO settings (key, value, updated_at) VALUES (:k, :v, CURRENT_TIMESTAMP)
+        ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = CURRENT_TIMESTAMP
+    ");
+    foreach ($kv as $k => $v) {
+        $stmt->execute([':k' => $k, ':v' => (string) $v]);
+    }
 }
