@@ -1,51 +1,72 @@
-# Lyblics Noel — Calendrier de l'Avent - https://noel.lyblics.com/
+# Noel de Sophie — Site vitrine
 
-Calendrier de l'Avent interactif avec cases cliquables, chaque case révélant un produit (cristal).
-
-## Apercu
-
-- Cases numérotées cliquables sur la page principale
-- Chaque case renvoie vers une page produit dédiée
-- Images des cristaux extraites automatiquement depuis des PDFs sources
+Site vitrine pour des décorations de Noël artisanales (boules en cristal gravées au laser 3D).
+Production : https://noel.lyblics.com/
 
 ## Stack
 
-- **PHP** — pages dynamiques (`index.php`, `product.php`)
-- **Python** — script utilitaire d'extraction d'images (`extract_images.py`)
-- **Assets** — images PNG/JPG, PDFs sources
+- **PHP 8** — pages publiques + panel admin
+- **SQLite** — stockage des produits (`data/products.db`)
+- **Python (utilitaire)** — `extract_images.py` pour découper les visuels depuis les PDFs sources
 
 ## Structure
 
 ```
 LyblicsNoel/
-├── index.php               # Calendrier de l'Avent (page principale)
-├── product.php             # Page produit d'une case
-├── extract_images.py       # Extraction d'images depuis les PDFs
+├── index.php               # Page publique (collection)
+├── product.php             # Fiche produit publique
+├── extract_images.py       # Outil d'extraction d'images (one-shot)
+├── admin/
+│   ├── login.php           # Connexion
+│   ├── setup.php           # Création du 1er admin (auto si DB vide)
+│   ├── logout.php
+│   ├── index.php           # Dashboard liste produits
+│   ├── edit.php            # Création / édition d'un produit
+│   ├── delete.php
+│   └── auth.php            # Helpers session, CSRF, layout admin
+├── includes/
+│   └── db.php              # PDO SQLite + helpers CRUD + seed initial
+├── data/
+│   ├── products.db         # Base SQLite (créée au 1er run, gitignorée)
+│   └── .htaccess           # Bloque l'accès direct
 ├── images/
-│   └── cristal_*.jpg/png   # Images des cases (cristaux)
-├── lili/
-│   ├── Page - XX.pdf       # Pages PDF sources (1 à 40)
-│   ├── commande.xlsx        # Fichier de commande
-│   └── commandepdf.pdf     # Commandes en PDF
-└── 1.png … 10.png          # Miniatures des cases
+│   ├── cristal_*.png       # Visuels initiaux
+│   └── uploads/            # Images ajoutées via le panel admin
+└── lili/                   # PDFs sources (hors web)
 ```
 
-## Extraction des images
+## Installation
 
-Le script `extract_images.py` découpe automatiquement les cristaux depuis les PDFs sources.
+Sur le VPS (déploiement Coolify ou tout hébergement PHP 8+) :
 
-### Prérequis
+1. Cloner le dépôt à la racine web.
+2. S'assurer que PHP a le droit d'écrire dans `data/` et `images/uploads/`.
+3. Ouvrir le site dans un navigateur — la base SQLite et le seed des 10 produits initiaux sont créés automatiquement au premier accès.
+4. Ouvrir `/admin/` : un formulaire de configuration apparaît pour créer le premier compte administrateur.
+5. Se connecter et gérer les produits.
+
+### Permissions
+
+```bash
+chmod -R 775 data images/uploads
+```
+
+(adapter selon l'utilisateur du process PHP-FPM)
+
+## Panel admin
+
+- URL : `/admin/`
+- Premier accès : redirige vers `/admin/setup.php` pour créer le compte initial.
+- Gestion des produits : création, édition (nom, slug, descriptions, prix, badge, note, image, ordre, visibilité), suppression.
+- Upload d'images : JPG / PNG / WEBP, max 5 Mo. Stocké dans `images/uploads/`.
+
+## Extraction des images (utilitaire)
+
+Le script `extract_images.py` découpe les cristaux depuis les PDFs sources de `lili/`.
 
 ```bash
 pip install pymupdf pillow
-```
-
-### Utilisation
-
-Mettre à jour les chemins dans `extract_images.py` puis lancer :
-
-```bash
 python extract_images.py
 ```
 
-Les images sont exportées dans `images/` au format `cristal_XX.jpg` (500×500 px).
+Les chemins sont à adapter en tête du fichier. Sortie dans `images/cristal_XX.jpg` (500×500 px).
