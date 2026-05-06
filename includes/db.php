@@ -299,6 +299,52 @@ function createAdmin(string $username, string $password): void {
     ]);
 }
 
+function getAdmins(): array {
+    return db()->query('SELECT id, username, created_at FROM admins ORDER BY id ASC')->fetchAll();
+}
+
+function getAdminById(int $id): ?array {
+    $stmt = db()->prepare('SELECT id, username, created_at FROM admins WHERE id = :id LIMIT 1');
+    $stmt->execute([':id' => $id]);
+    $row = $stmt->fetch();
+    return $row ?: null;
+}
+
+function adminUsernameExists(string $username, ?int $excludingId = null): bool {
+    if ($excludingId === null) {
+        $stmt = db()->prepare('SELECT 1 FROM admins WHERE username = :u LIMIT 1');
+        $stmt->execute([':u' => $username]);
+    } else {
+        $stmt = db()->prepare('SELECT 1 FROM admins WHERE username = :u AND id != :id LIMIT 1');
+        $stmt->execute([':u' => $username, ':id' => $excludingId]);
+    }
+    return (bool) $stmt->fetchColumn();
+}
+
+function updateAdminPassword(int $id, string $newPassword): void {
+    $stmt = db()->prepare('UPDATE admins SET password_hash = :h WHERE id = :id');
+    $stmt->execute([
+        ':id' => $id,
+        ':h'  => password_hash($newPassword, PASSWORD_DEFAULT),
+    ]);
+}
+
+function deleteAdmin(int $id): bool {
+    if (adminCount() <= 1) {
+        return false;
+    }
+    $stmt = db()->prepare('DELETE FROM admins WHERE id = :id');
+    $stmt->execute([':id' => $id]);
+    return $stmt->rowCount() > 0;
+}
+
+function verifyAdminPassword(int $id, string $password): bool {
+    $stmt = db()->prepare('SELECT password_hash FROM admins WHERE id = :id LIMIT 1');
+    $stmt->execute([':id' => $id]);
+    $hash = $stmt->fetchColumn();
+    return $hash !== false && password_verify($password, $hash);
+}
+
 function saveMessage(array $data): int {
     $stmt = db()->prepare("
         INSERT INTO messages (nom, prenom, email, telephone, sujet, message, ip, user_agent)

@@ -225,6 +225,7 @@ function adminHeader(): void {
             <a href="edit.php">Nouveau produit</a>
             <a href="messages.php">Messages<?php if ($unread > 0): ?> <span class="nav-badge"><?= $unread ?></span><?php endif; ?></a>
             <a href="settings.php">Parametres</a>
+            <a href="users.php">Comptes</a>
             <a href="../index.php" target="_blank">Voir le site</a>
             <a href="logout.php">Deconnexion</a>
         </nav>

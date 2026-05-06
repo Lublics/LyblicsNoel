@@ -56,3 +56,9 @@
 - **[2026-05-06 18:59:59]** `Edit` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\product.php`
 - **[2026-05-06 19:00:06]** `Edit` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\admin\index.php`
 - **[2026-05-06 19:00:14]** `Edit` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\admin\edit.php`
+- **[2026-05-06 19:23:20]** `Write` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\docs\DATA_DICTIONARY.md`
+- **[2026-05-06 19:25:14]** `Write` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\docs\DICTIONNAIRE_DONNEES.md`
+- **[2026-05-06 19:36:30]** `Write` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\docs\DOSSIER_PROJET.md`
+- **[2026-05-06 19:46:11]** `Edit` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\includes\db.php`
+- **[2026-05-06 19:46:41]** `Write` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\admin\users.php`
+- **[2026-05-06 19:46:46]** `Edit` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\admin\auth.php`
