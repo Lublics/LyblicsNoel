@@ -35,23 +35,29 @@ LyblicsNoel/
 └── lili/                   # PDFs sources (hors web)
 ```
 
-## Installation
+## Déploiement Coolify
 
-Sur le VPS (déploiement Coolify ou tout hébergement PHP 8+) :
+Le projet est livré avec un `Dockerfile` (PHP 8.2 + Apache + SQLite). Coolify le détecte automatiquement.
 
-1. Cloner le dépôt à la racine web.
-2. S'assurer que PHP a le droit d'écrire dans `data/` et `images/uploads/`.
-3. Ouvrir le site dans un navigateur — la base SQLite et le seed des 10 produits initiaux sont créés automatiquement au premier accès.
-4. Ouvrir `/admin/` : un formulaire de configuration apparaît pour créer le premier compte administrateur.
-5. Se connecter et gérer les produits.
+### Étapes
+
+1. Dans Coolify, créer une nouvelle application en mode **Dockerfile** (et non Nixpacks).
+2. Pointer vers le dépôt Git.
+3. **⚠️ Configurer 2 volumes persistants** dans l'onglet *Storage* (sinon la base et les images uploadées sont perdues à chaque redéploiement) :
+   - Mount path : `/var/www/html/data` → pour la base SQLite
+   - Mount path : `/var/www/html/images/uploads` → pour les images uploadées par l'admin
+4. Déployer. Au premier accès :
+   - La base SQLite est créée et seedée avec les 10 produits initiaux.
+   - Aller sur `/admin/` pour créer le premier compte administrateur (formulaire de setup affiché automatiquement).
 
 ### Permissions
 
+Le `Dockerfile` configure déjà les bons droits (`www-data` peut écrire dans `data/` et `images/uploads/`). Si tu déploies sans Docker, exécute :
+
 ```bash
+chown -R www-data:www-data data images/uploads
 chmod -R 775 data images/uploads
 ```
-
-(adapter selon l'utilisateur du process PHP-FPM)
 
 ## Panel admin
 

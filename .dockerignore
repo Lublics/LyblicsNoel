@@ -1,0 +1,17 @@
+.git
+.gitignore
+.dockerignore
+README.md
+CHANGES.md
+*.md
+lili/
+extract_images.py
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
+images/uploads/*
+!images/uploads/.gitkeep
+.DS_Store
+Thumbs.db
+*.log

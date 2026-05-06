@@ -13,11 +13,37 @@ function db(): PDO {
     }
 
     $dir = dirname(DB_PATH);
-    if (!is_dir($dir)) {
-        mkdir($dir, 0775, true);
+
+    if (!is_dir($dir) && !@mkdir($dir, 0775, true) && !is_dir($dir)) {
+        throw new RuntimeException(
+            "Le dossier de base de donnees n'existe pas et ne peut pas etre cree : $dir. " .
+            "Verifiez les permissions du conteneur (le user PHP doit pouvoir ecrire dans ce dossier)."
+        );
     }
 
-    $pdo = new PDO('sqlite:' . DB_PATH);
+    if (!is_writable($dir)) {
+        $owner = function_exists('posix_getpwuid') && function_exists('fileowner')
+            ? (posix_getpwuid(fileowner($dir))['name'] ?? '?')
+            : '?';
+        $php_user = function_exists('posix_getpwuid') && function_exists('posix_geteuid')
+            ? (posix_getpwuid(posix_geteuid())['name'] ?? '?')
+            : '?';
+        throw new RuntimeException(
+            "Le dossier $dir n'est pas accessible en ecriture (proprietaire: $owner, user PHP: $php_user). " .
+            "Executez : chown -R www-data:www-data $dir && chmod 775 $dir"
+        );
+    }
+
+    try {
+        $pdo = new PDO('sqlite:' . DB_PATH);
+    } catch (PDOException $e) {
+        throw new RuntimeException(
+            "Impossible d'ouvrir la base SQLite a " . DB_PATH . ". " .
+            "Verifiez les permissions d'ecriture sur " . dirname(DB_PATH) . ". " .
+            "Erreur PDO : " . $e->getMessage()
+        );
+    }
+
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     $pdo->exec('PRAGMA foreign_keys = ON');

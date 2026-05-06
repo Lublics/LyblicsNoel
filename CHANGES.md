@@ -20,3 +20,9 @@
 - **[2026-05-06 17:51:35]** `Write` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\data\.htaccess`
 - **[2026-05-06 17:51:36]** `Write` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\.gitignore`
 - **[2026-05-06 17:52:00]** `Write` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\README.md`
+- **[2026-05-06 17:57:32]** `Write` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\Dockerfile`
+- **[2026-05-06 17:57:32]** `Write` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\.dockerignore`
+- **[2026-05-06 17:57:46]** `Edit` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\includes\db.php`
+- **[2026-05-06 17:58:10]** `Edit` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\README.md`
+- **[2026-05-06 17:58:31]** `Write` → `C:\Users\renau\.claude\projects\C--Users-renau-Documents-GitHub-LyblicsNoel\memory\deploy_coolify.md`
+- **[2026-05-06 17:58:32]** `Edit` → `C:\Users\renau\.claude\projects\C--Users-renau-Documents-GitHub-LyblicsNoel\memory\MEMORY.md`
