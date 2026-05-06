@@ -26,3 +26,4 @@
 - **[2026-05-06 17:58:10]** `Edit` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\README.md`
 - **[2026-05-06 17:58:31]** `Write` → `C:\Users\renau\.claude\projects\C--Users-renau-Documents-GitHub-LyblicsNoel\memory\deploy_coolify.md`
 - **[2026-05-06 17:58:32]** `Edit` → `C:\Users\renau\.claude\projects\C--Users-renau-Documents-GitHub-LyblicsNoel\memory\MEMORY.md`
+- **[2026-05-06 18:06:22]** `Edit` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\Dockerfile`
