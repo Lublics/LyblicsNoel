@@ -62,3 +62,4 @@
 - **[2026-05-06 19:46:11]** `Edit` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\includes\db.php`
 - **[2026-05-06 19:46:41]** `Write` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\admin\users.php`
 - **[2026-05-06 19:46:46]** `Edit` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\admin\auth.php`
+- **[2026-05-26 11:30:31]** `Write` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\create_admin.sql`
