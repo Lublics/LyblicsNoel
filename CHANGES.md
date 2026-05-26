@@ -63,3 +63,11 @@
 - **[2026-05-06 19:46:41]** `Write` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\admin\users.php`
 - **[2026-05-06 19:46:46]** `Edit` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\admin\auth.php`
 - **[2026-05-26 11:30:31]** `Write` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\create_admin.sql`
+- **[2026-05-26 12:03:42]** `Write` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\mentions-legales.php`
+- **[2026-05-26 12:04:36]** `Write` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\politique-confidentialite.php`
+- **[2026-05-26 12:04:40]** `Edit` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\index.php`
+- **[2026-05-26 12:09:24]** `Edit` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\mentions-legales.php`
+- **[2026-05-26 12:09:32]** `Edit` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\mentions-legales.php`
+- **[2026-05-26 12:09:38]** `Edit` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\politique-confidentialite.php`
+- **[2026-05-26 12:09:45]** `Edit` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\politique-confidentialite.php`
+- **[2026-05-26 12:09:50]** `Edit` → `C:\Users\renau\Documents\GitHub\LyblicsNoel\politique-confidentialite.php`

@@ -682,8 +682,8 @@ function stars(int $rating): string {
                 </div>
                 <div class="footer-col">
                     <h4>INFORMATIONS</h4>
-                    <a href="#">Mentions legales</a>
-                    <a href="#">Politique de confidentialite</a>
+                    <a href="mentions-legales.php">Mentions legales</a>
+                    <a href="politique-confidentialite.php">Politique de confidentialite</a>
                 </div>
                 <div class="footer-col">
                     <h4>CONTACT</h4>
